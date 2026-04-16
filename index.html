@@ -3,91 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Sheets Reader PoC</title>
+    <title>Days without Michał...</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.6; padding: 20px; max-width: 1000px; margin: 0 auto; background-color: #f6f8fa; }
-        .controls { margin-bottom: 20px; display: flex; gap: 10px; }
-        input { padding: 8px; border: 1px solid #d0d7de; border-radius: 6px; width: 100%; max-width: 300px; }
-        .table-container { background: white; border: 1px solid #d0d7de; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        table { border-collapse: collapse; width: 100%; font-size: 14px; }
-        th { background-color: #f6f8fa; border-bottom: 1px solid #d0d7de; padding: 12px; text-align: left; font-weight: 600; }
-        td { border-bottom: 1px solid #f0f0f0; padding: 12px; }
-        tr:last-child td { border-bottom: none; }
-        tr:hover { background-color: #fbfcfd; }
-        .loading { color: #57606a; font-style: italic; }
+        :root {
+            --bg-color: #f0f4f8;
+            --primary-color: #6366f1;
+            --text-color: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        .container {
+            background: white;
+            padding: 3rem;
+            border-radius: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            color: #64748b;
+        }
+
+        #day-count {
+            font-size: 8rem;
+            font-weight: 900;
+            margin: 0;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+
+        .label {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        #message-display {
+            height: 3rem;
+            margin-top: 1.5rem;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #4f46e5;
+            box-shadow: 0 6px 12px rgba(99, 102, 241, 0.4);
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
 
-<h2>Project Data</h2>
+<div class="container">
+    <h1>Days without Michał</h1>
+    <p id="day-count">0</p>
+    <div class="label">and counting...</div>
 
-<div class="controls">
-    <input type="text" id="searchInput" placeholder="Search rows..." onkeyup="filterTable()">
-</div>
-
-<div class="table-container">
-    <div id="status" class="loading" style="padding: 20px;">Fetching data from Google Sheets...</div>
-    <table id="sheetTable" style="display: none;">
-        <thead id="tableHead"></thead>
-        <tbody id="tableBody"></tbody>
-    </table>
+    <button onclick="revealMessage()">Message of the Day</button>
+    <div id="message-display"></div>
 </div>
 
 <script>
-    // REPLACE THIS WITH YOUR ACTUAL SHEET ID
-    const SHEET_ID = '1EePXMZjVeQ8qe1sGQ_NzISDtXWDLAiB07EsQKmlTIu0';
-    const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+    // --- CONFIGURATION ---
+    // Set the date when Michał was last seen (YYYY, MM-1, DD)
+    // Note: Months are 0-indexed (0 = Jan, 1 = Feb, etc.)
+    const LAST_SEEN_DATE = new Date(2026, 3, 15);
 
-    async function init() {
-        try {
-            const response = await fetch(URL);
-            const text = await response.text();
-            // Strip the google wrapper
-            const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\)/)[1]);
+    const messages = [
+        "Quack, quack...",
+        "Be a man, don't be a part of the problem - be the whole problem",
+        "Remember: your code doesn't have to work, it has to run",
+        "You guys are like my family, you constantly let me down",
+        "Horizontal scroll?? I don't know that one...",
+    ];
 
-            renderTable(json.table);
-        } catch (err) {
-            document.getElementById('status').innerHTML = "Error: Could not load sheet. Ensure it is public.";
-            console.error(err);
-        }
+    // --- LOGIC ---
+    function updateCounter() {
+        const now = new Date();
+        const difference = now - LAST_SEEN_DATE;
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        document.getElementById('day-count').innerText = days;
     }
 
-    function renderTable(table) {
-        const head = document.getElementById('tableHead');
-        const body = document.getElementById('tableBody');
+    function revealMessage() {
+        const now = new Date();
+        const difference = now - LAST_SEEN_DATE;
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const display = document.getElementById('message-display');
+        const randomMessage = messages[days-1%messages.length];
 
-        // Render Headers
-        let headHtml = '<tr>';
-        table.cols.forEach(col => {
-            headHtml += `<th>${col.label || ''}</th>`;
+        display.innerText = randomMessage;
+
+        // Confetti Blast!
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#6366f1', '#a855f7', '#ec4899']
         });
-        head.innerHTML = headHtml + '</tr>';
-
-        // Render Rows
-        let bodyHtml = '';
-        table.rows.forEach(row => {
-            bodyHtml += '<tr>';
-            row.c.forEach(cell => {
-                bodyHtml += `<td>${cell ? (cell.f || cell.v) : ''}</td>`;
-            });
-            bodyHtml += '</tr>';
-        });
-        body.innerHTML = bodyHtml;
-
-        // Toggle visibility
-        document.getElementById('status').style.display = 'none';
-        document.getElementById('sheetTable').style.display = 'table';
     }
 
-    function filterTable() {
-        const input = document.getElementById("searchInput").value.toUpperCase();
-        const rows = document.getElementById("tableBody").getElementsByTagName("tr");
-        for (let i = 0; i < rows.length; i++) {
-            rows[i].style.display = rows[i].innerText.toUpperCase().includes(input) ? "" : "none";
-        }
-    }
-
-    init();
+    // Initialize counter
+    updateCounter();
 </script>
 </body>
 </html>
