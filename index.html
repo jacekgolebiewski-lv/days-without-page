@@ -91,6 +91,21 @@
         button:active {
             transform: scale(0.95);
         }
+
+        /* Subtle Link Style */
+        .bartosz-link {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            text-decoration: none;
+            color: #94a3b8;
+            transition: color 0.2s ease;
+            opacity: 0.6;
+        }
+
+        .bartosz-link:hover {
+            color: #64748b;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -104,10 +119,10 @@
     <div id="message-display"></div>
 </div>
 
+<a href="bartosz.html" class="bartosz-link">I miss Bartosz...</a>
+
 <script>
     // --- CONFIGURATION ---
-    // Set the date when Michał was last seen (YYYY, MM-1, DD)
-    // Note: Months are 0-indexed (0 = Jan, 1 = Feb, etc.)
     const LAST_SEEN_DATE = new Date(2026, 3, 15);
 
     const messages = [
@@ -138,11 +153,13 @@
         const difference = now - LAST_SEEN_DATE;
         const days = Math.floor(difference / (1000 * 60 * 60 * 24));
         const display = document.getElementById('message-display');
-        const randomMessage = messages[days-1%messages.length];
+
+        // Fixed operator precedence bug from original
+        const index = (days - 1) % messages.length;
+        const randomMessage = messages[index < 0 ? 0 : index];
 
         display.innerText = randomMessage;
 
-        // Confetti Blast!
         confetti({
             particleCount: 100,
             spread: 70,
@@ -151,7 +168,6 @@
         });
     }
 
-    // Initialize counter
     updateCounter();
 </script>
 </body>

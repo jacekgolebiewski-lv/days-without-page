@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Days without Bartosz...</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #e2e8f0;
+            --primary-color: #475569;
+            --text-color: #1e293b;
+        }
+
+        body.party-mode {
+            --bg-color: #fdf2f8;
+            --primary-color: #db2777;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            transition: background-color 0.5s ease;
+        }
+
+        .container {
+            background: white;
+            padding: 3rem;
+            border-radius: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            z-index: 10;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        h1 { font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; color: #64748b; margin-bottom: 0.5rem; }
+        #day-count { font-size: 8rem; font-weight: 900; margin: 0; color: var(--primary-color); line-height: 1; }
+        .label { font-size: 1.5rem; font-weight: 600; margin-bottom: 2rem; }
+
+        .btn-zone { height: 60px; display: flex; justify-content: center; align-items: center; }
+        button {
+            opacity: 0;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-zone:hover button { opacity: 1; }
+
+        .emoji {
+            position: absolute;
+            font-size: 2.5rem;
+            pointer-events: none;
+            z-index: 1;
+            filter: grayscale(0.5);
+            animation: floatUp 6s linear forwards;
+            bottom: -50px; /* Start below the screen */
+        }
+
+        body.party-mode .emoji { filter: grayscale(0); }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="header">Days without Bartosz</h1>
+    <p id="day-count">0</p>
+    <div class="label" id="sub-label">and counting...</div>
+
+    <div class="btn-zone">
+        <button onclick="ignite()">Nah, just be honest...</button>
+    </div>
+</div>
+
+<script>
+    const START_DATE = new Date(2026, 3, 17);
+    let isParty = false;
+
+    const sadEmojis = ['😢', '😭', '🥀', '☁️', '📉', '💔', '🌧️', '😩', '😔', '🌑'];
+    const happyEmojis = ['🎉', '🥳', '✨', '🍕', '💃', '🔥', '🍻', '🎈', '🕺', '🌈'];
+
+    function updateCounter() {
+        const diff = new Date() - START_DATE;
+        document.getElementById('day-count').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+    }
+
+    function spawnEmoji() {
+        const e = document.createElement('div');
+        e.className = 'emoji';
+        const list = isParty ? happyEmojis : sadEmojis;
+        e.innerText = list[Math.floor(Math.random() * list.length)];
+        e.style.left = Math.random() * 100 + 'vw';
+        e.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        e.style.fontSize = (Math.random() * 1 + 1.5) + 'rem';
+
+        document.body.appendChild(e);
+        setTimeout(() => e.remove(), 7000);
+    }
+
+    function ignite() {
+        if(isParty) return;
+        isParty = true;
+        document.body.classList.add('party-mode');
+        document.getElementById('header').innerText = "Bartosz is out!";
+        document.getElementById('sub-label').innerText = "TIME TO CELEBRATE!";
+
+        (function loop() {
+            confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#db2777', '#f472b6', '#6366f1'] });
+            confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#db2777', '#f472b6', '#6366f1'] });
+            if(isParty) requestAnimationFrame(loop);
+        })();
+    }
+
+    updateCounter();
+    // Immediate and constant emoji rain
+    setInterval(spawnEmoji, 150);
+</script>
+</body>
+</html>
