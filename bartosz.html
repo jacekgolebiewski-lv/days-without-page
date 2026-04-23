@@ -85,7 +85,7 @@
 <div class="container">
     <h1 id="header">Days without Bartosz</h1>
     <p id="day-count">0</p>
-    <div class="label" id="sub-label">and counting...</div>
+    <div class="label" id="sub-label">and not counting :)</div>
 
     <div class="btn-zone">
         <button onclick="ignite()">Nah, just be honest...</button>
@@ -101,7 +101,7 @@
 
     function updateCounter() {
         const diff = new Date() - START_DATE;
-        document.getElementById('day-count').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+        document.getElementById('day-count').innerText = '21d 37h';
     }
 
     function spawnEmoji() {
