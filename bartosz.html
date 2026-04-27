@@ -22,6 +22,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
@@ -48,7 +49,7 @@
         .btn-zone { height: 60px; display: flex; justify-content: center; align-items: center; }
         button {
             opacity: 0;
-            background-color: var(--primary-color);
+            background-color: #db2777;
             color: white;
             border: none;
             padding: 1rem 2rem;
@@ -78,6 +79,22 @@
             90% { opacity: 1; }
             100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
         }
+
+
+        /* Subtle Link Style */
+        .mike-link {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            text-decoration: none;
+            color: #94a3b8;
+            transition: color 0.2s ease;
+            opacity: 0.6;
+        }
+
+        .mike-link:hover {
+            color: #64748b;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -85,12 +102,14 @@
 <div class="container">
     <h1 id="header">Days without Bartosz</h1>
     <p id="day-count">0</p>
-    <div class="label" id="sub-label">and not counting :)</div>
+    <div class="label" id="sub-label">or is Bartosz with us?</div>
 
     <div class="btn-zone">
-        <button onclick="ignite()">Nah, just be honest...</button>
+        <button onclick="ignite()">YES!</button>
     </div>
 </div>
+<br>
+<a href="index.html" class="mike-link">Back to Mike?</a>
 
 <script>
     const START_DATE = new Date(2026, 3, 17);

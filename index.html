@@ -116,7 +116,7 @@
     <div class="label">and counting...</div>
 
     <button onclick="revealMessage()">Message of the Day</button>
-    <div id="message-display"></div>
+    <div id="message-display">Mike's back already, ask him for MOTD :P</div>
 </div>
 
 <a href="bartosz.html" class="bartosz-link">I miss Bartosz...</a>
@@ -128,16 +128,11 @@
     const messages = [
         "Quack, quack...",
         "Be a man, don't be a part of the problem - be the whole problem",
-        "What are you doing here? It's weekend - HAVE A LIFE!",
-        "What are you doing here? It's weekend - HAVE A LIFE!",
         "Remember: your code doesn't have to work, it has to run",
         "You guys are like my family, you constantly let me down",
         "Horizontal scroll?? I don't know that one...",
         "I want to lorem your ipsum.",
         "You must be async, I can't wait for you.",
-        "What are you doing here? It's weekend - HAVE A LIFE!",
-        "What are you doing here? It's weekend - HAVE A LIFE!",
-        "Mike's back already, ask him for MOTD :P",
     ];
 
     // --- LOGIC ---
@@ -156,7 +151,8 @@
 
         // Fixed operator precedence bug from original
         const index = (days - 1) % messages.length;
-        const randomMessage = messages[index < 0 ? 0 : index];
+        const randomMessageForToday = messages[index < 0 ? 0 : index];
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
 
         display.innerText = randomMessage;
 
